@@ -3,132 +3,234 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Party Queue</title>
+<title>Party Queue - Spotify Edition</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg: #0b0e14;
-    --panel: #12161f;
-    --panel-2: #191e2a;
-    --amber: #f2a93b;
-    --teal: #3ed6b5;
-    --text: #eef1f6;
-    --text-dim: #8b93a3;
+    --spotify-black: #121212;
+    --spotify-gray: #282828;
+    --spotify-light-gray: #535353;
+    --spotify-green: #1DB954;
+    --spotify-text: #FFFFFF;
+    --spotify-text-dim: #B3B3B3;
     --danger: #e85d5d;
   }
   *{box-sizing:border-box;}
   html,body{
     margin:0; padding:0; height:100%;
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
+    background: var(--spotify-black);
+    color: var(--spotify-text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     -webkit-tap-highlight-color: transparent;
     overscroll-behavior: none;
+    line-height: 1.5;
   }
-  h1,h2,h3, .display{ font-family:'Space Grotesk', sans-serif; }
+  h1,h2,h3{ font-family: 'Inter', sans-serif; font-weight: 700; letter-spacing: -0.5px;}
 
   #app{ height:100%; display:flex; flex-direction:column; }
 
+  /* ---------- Header ---------- */
   header{
     display:flex; align-items:center; justify-content:space-between;
-    padding: 18px 28px; border-bottom: 1px solid #1f2531;
+    padding: 24px 32px;
+    background: linear-gradient(to bottom, #2a2a2a, #1a1a1a);
+    border-bottom: 1px solid #1f1f1f;
   }
-  header h1{ margin:0; font-size:22px; letter-spacing:0.5px; }
-  header h1 span{ color: var(--amber); }
-  #logout-btn{
-    background:none; border:1px solid #2a3140; color:var(--text-dim);
-    padding:8px 14px; border-radius:8px; font-size:13px; cursor:pointer;
+  header h1{ margin:0; font-size:26px; display: flex; align-items: center; gap: 10px;}
+  header h1 span{ color: var(--spotify-text); }
+  
+  #spotify-logo {
+      width: 32px;
+      height: 32px;
+      fill: var(--spotify-green);
   }
-  #lang-switch{ display:flex; gap:4px; background:var(--panel); border-radius:8px; padding:3px; }
-  .lang-btn{
-    background:none; border:none; color:var(--text-dim); font-size:12px; font-weight:600;
-    padding:6px 10px; border-radius:6px; cursor:pointer; font-family:'Space Grotesk', sans-serif;
-  }
-  .lang-btn.active{ background: var(--amber); color:#1a1200; }
 
-  /* ---------- Setup screen ---------- */
-  #setup-screen, #lock-screen{
-    max-width: 520px; margin: 60px auto; padding: 32px;
-    background: var(--panel); border-radius: 16px;
+  #header-controls {
+      display: flex;
+      align-items: center;
+      gap: 20px;
   }
-  #setup-screen label, #lock-screen label{ display:block; margin: 18px 0 6px; font-size:13px; color:var(--text-dim); }
+
+  #logout-btn{
+    background: transparent;
+    border: 1px solid var(--spotify-light-gray);
+    color: var(--spotify-text-dim);
+    padding:8px 16px;
+    border-radius:9999px;
+    font-size:14px;
+    cursor:pointer;
+    transition: all 0.2s ease;
+  }
+  #logout-btn:hover {
+      background-color: rgba(255,255,255,0.1);
+      color: var(--spotify-text);
+      border-color: var(--spotify-text);
+  }
+
+  #lang-switch{ display:flex; gap:8px; background:rgba(0,0,0,0.3); border-radius:9999px; padding:4px; }
+  .lang-btn{
+    background:none; border:none; color:var(--spotify-text-dim); font-size:13px; font-weight:600;
+    padding:6px 12px; border-radius:9999px; cursor:pointer; transition: all 0.2s ease;
+  }
+  .lang-btn:hover {
+      background-color: rgba(255,255,255,0.1);
+      color: var(--spotify-text);
+  }
+  .lang-btn.active{ background: #333; color:var(--spotify-text); }
+
+  /* ---------- Setup & Lock screens ---------- */
+  #setup-screen, #lock-screen{
+    max-width: 480px; margin: 80px auto; padding: 40px;
+    background: var(--spotify-gray);
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  }
+  #setup-screen label, #lock-screen label{ display:block; margin: 20px 0 8px; font-size:14px; font-weight: 600; color:var(--spotify-text); }
   #setup-screen input, #lock-screen input{
-    width:100%; padding:12px 14px; border-radius:8px; border:1px solid #2a3140;
-    background: var(--panel-2); color:var(--text); font-size:15px;
+    width:100%; padding:12px 16px; border-radius:4px; border:none;
+    background: #333; color:var(--spotify-text); font-size:16px;
+  }
+  #setup-screen input::placeholder, #lock-screen input::placeholder {
+      color: var(--spotify-text-dim);
   }
   #redirect-box{
-    background:var(--panel-2); border:1px dashed #3a4256; border-radius:8px;
-    padding:10px 12px; font-size:13px; color:var(--teal); word-break:break-all;
-    margin-top:6px; cursor:pointer;
+    background:rgba(0,0,0,0.2); border:1px solid var(--spotify-light-gray); border-radius:4px;
+    padding:12px 16px; font-size:14px; color:var(--spotify-green); word-break:break-all;
+    margin-top:6px; cursor:pointer; font-family: monospace;
   }
-  .hint{ font-size:12px; color:var(--text-dim); margin-top:6px; line-height:1.5; }
+  .hint{ font-size:13px; color:var(--spotify-text-dim); margin-top:8px; line-height:1.6; }
   .btn-primary{
-    margin-top:24px; width:100%; padding:14px; border:none; border-radius:10px;
-    background: var(--amber); color:#1a1200; font-weight:600; font-size:15px; cursor:pointer;
+    margin-top:32px; width:100%; padding:16px; border:none; border-radius:9999px;
+    background: var(--spotify-green); color:#000; font-weight:700; font-size:16px; cursor:pointer;
+    transition: transform 0.1s ease;
   }
-  .btn-primary:disabled{ opacity:0.5; }
+  .btn-primary:hover {
+      transform: scale(1.02);
+      background-color: #1ed760;
+  }
+  .btn-primary:disabled{ opacity:0.5; cursor: not-allowed; }
 
   /* ---------- Main screen ---------- */
-  #main-screen{ flex:1; display:flex; flex-direction:column; overflow:hidden; padding: 20px 28px 0; }
+  #main-screen{ flex:1; display:flex; flex-direction:column; overflow:hidden; padding: 32px; }
 
   #now-playing{
-    display:flex; align-items:center; gap:18px;
-    background: var(--panel); border-radius: 16px; padding: 16px 20px; margin-bottom:20px;
+    display:flex; align-items:center; gap:24px;
+    background: linear-gradient(to right, #2a2a2a, #1a1a1a);
+    border-radius: 12px; padding: 20px 24px; margin-bottom:32px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
   }
-  #disc{
-    width:56px; height:56px; border-radius:50%;
-    background: radial-gradient(circle at 50% 50%, #1a1200 0 10%, var(--amber) 11% 13%, #1a1200 14% 100%);
-    flex-shrink:0;
-    animation: spin 6s linear infinite;
-    animation-play-state: paused;
-  }
-  #disc.playing{ animation-play-state: running; }
-  @keyframes spin{ from{transform:rotate(0)} to{transform:rotate(360deg)} }
-  #now-playing .np-label{ font-size:11px; text-transform:uppercase; letter-spacing:1px; color:var(--text-dim); }
-  #now-playing .np-title{ font-size:17px; font-weight:600; }
-  #now-playing .np-artist{ font-size:13px; color:var(--text-dim); }
 
-  #search-row{ display:flex; gap:10px; margin-bottom:16px; }
+  #np-cover {
+      width: 80px;
+      height: 80px;
+      background-color: var(--spotify-light-gray);
+      border-radius: 4px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+      display: flex; align-items: center; justify-content: center;
+  }
+  #np-cover svg {
+      width: 40px; height: 40px; fill: var(--spotify-text-dim);
+  }
+
+  #now-playing .np-label{ font-size:12px; text-transform:uppercase; letter-spacing:1.5px; color:var(--spotify-text-dim); font-weight: 700; margin-bottom: 4px;}
+  #now-playing .np-title{ font-size:28px; font-weight:800; line-height: 1.2; margin-bottom: 4px;}
+  #now-playing .np-artist{ font-size:16px; color:var(--spotify-text-dim); }
+
+  #search-row{ display:flex; gap:16px; margin-bottom:24px; position: relative;}
   #search-input{
-    flex:1; padding:14px 16px; border-radius:10px; border:1px solid #2a3140;
-    background: var(--panel-2); color:var(--text); font-size:16px;
+    flex:1; padding:14px 16px 14px 48px; border-radius:9999px; border:none;
+    background: #2a2a2a; color:var(--spotify-text); font-size:16px;
+    transition: background-color 0.2s ease;
   }
+  #search-input:focus {
+      background-color: #333;
+      outline: none;
+      border: 1px solid var(--spotify-light-gray);
+  }
+  #search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px; height: 20px;
+      fill: var(--spotify-text-dim);
+  }
+
   #search-btn{
-    padding: 0 22px; border:none; border-radius:10px; background: var(--teal);
-    color:#062621; font-weight:600; cursor:pointer;
+    padding: 0 32px; border:none; border-radius:9999px; background: var(--spotify-green);
+    color:#000; font-weight:700; cursor:pointer; font-size:15px;
+    transition: transform 0.1s ease;
+  }
+  #search-btn:hover {
+      transform: scale(1.02);
+      background-color: #1ed760;
   }
 
-  #columns{ flex:1; display:flex; gap:20px; overflow:hidden; padding-bottom:20px; }
+  #columns{ flex:1; display:flex; gap:32px; overflow:hidden; }
   .col{ flex:1; display:flex; flex-direction:column; overflow:hidden; }
-  .col h3{ margin: 0 0 10px; font-size:14px; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px; }
-  .list{ flex:1; overflow-y:auto; padding-right:4px; }
+  .col h3{ margin: 0 0 16px; font-size:22px; font-weight: 700; color:var(--spotify-text); letter-spacing: -0.5px; }
 
-  .track-row{
-    display:flex; align-items:center; justify-content:space-between; gap:10px;
-    background: var(--panel); border-radius:10px; padding:12px 14px; margin-bottom:8px;
+  .list{ flex:1; overflow-y:auto; padding-right:8px; }
+  /* Stile scrollbar */
+  .list::-webkit-scrollbar { width: 8px; }
+  .list::-webkit-scrollbar-track { background: transparent; }
+  .list::-webkit-scrollbar-thumb { background: var(--spotify-light-gray); border-radius: 4px; }
+  .list::-webkit-scrollbar-thumb:hover { background: #666; }
+
+  .track-row, .queue-row{
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+    background: transparent; border-radius:4px; padding:10px 12px; margin-bottom:2px;
+    transition: background-color 0.2s ease;
   }
-  .track-row .t-name{ font-size:14px; font-weight:500; }
-  .track-row .t-artist{ font-size:12px; color:var(--text-dim); }
+  .track-row:hover, .queue-row:hover{
+      background-color: rgba(255,255,255,0.1);
+  }
+
+  .track-row .t-main, .queue-row .t-main {
+      flex: 1;
+      min-width: 0; /* Necessario per il text-overflow */
+  }
+
+  .track-row .t-name, .queue-row .t-name{ font-size:16px; font-weight:500; color:var(--spotify-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+  .track-row .t-artist, .queue-row .t-artist{ font-size:14px; color:var(--spotify-text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+
   .add-btn{
-    flex-shrink:0; width:38px; height:38px; border-radius:50%; border:none;
-    background: var(--amber); color:#1a1200; font-size:20px; font-weight:700; cursor:pointer;
+    flex-shrink:0; width:36px; height:36px; border-radius:50%; border:1px solid var(--spotify-light-gray);
+    background: transparent; color:var(--spotify-text-dim); font-size:24px; font-weight:700; cursor:pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s ease;
   }
-  .add-btn:active{ transform: scale(0.92); }
+  .add-btn:hover {
+      border-color: var(--spotify-text);
+      color: var(--spotify-text);
+      transform: scale(1.05);
+  }
 
-  .queue-row{
-    background: var(--panel); border-radius:10px; padding:12px 14px; margin-bottom:8px;
-    font-size:14px;
+  #toast-container {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
   }
-  .queue-row .t-artist{ font-size:12px; color:var(--text-dim); }
 
-  #toast{
-    position:fixed; bottom:24px; left:50%; transform: translateX(-50%);
-    background: var(--panel-2); border:1px solid #2a3140; color:var(--text);
-    padding:12px 20px; border-radius:10px; font-size:14px;
-    opacity:0; pointer-events:none; transition: opacity 0.25s ease, transform 0.25s ease;
+  .toast{
+    background: var(--spotify-green);
+    color: #000;
+    padding:16px 24px;
+    border-radius:8px;
+    font-size:15px;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    opacity:0;
+    transform: translateX(100%);
+    transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
-  #toast.show{ opacity:1; transform: translateX(-50%) translateY(-6px); }
+  .toast.show{ opacity:1; transform: translateX(0); }
 
   [hidden]{ display:none !important; }
 </style>
@@ -136,509 +238,5 @@
 <body>
 <div id="app">
   <header>
-    <h1>Party <span>Queue</span></h1>
-    <div style="display:flex; align-items:center; gap:14px;">
-      <div id="lang-switch">
-        <button class="lang-btn" data-lang="it" onclick="setLang('it')">IT</button>
-        <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
-        <button class="lang-btn" data-lang="de" onclick="setLang('de')">DE</button>
-      </div>
-      <button id="logout-btn" hidden onclick="logout()">Disconnetti</button>
-    </div>
-  </header>
-
-  <div id="setup-screen">
-    <h2 id="setup-title" style="margin-top:0;">Configurazione host</h2>
-    <p class="hint" id="setup-desc">Da fare una sola volta, prima della festa. Serve un'app creata su
-      <strong>developer.spotify.com/dashboard</strong> (gratuito).</p>
-
-    <label id="client-id-label">Client ID Spotify</label>
-    <input id="client-id-input" placeholder="es. 8f3a9c2b1e4d4f...">
-
-    <label id="redirect-label">Redirect URI da registrare nel dashboard Spotify</label>
-    <div id="redirect-box" onclick="copyRedirect()">caricamento…</div>
-    <div class="hint" id="redirect-hint">Tocca per copiare. Deve combaciare ESATTAMENTE (incluso https/http e slash finale) con quella inserita in Spotify Dashboard → Settings → Redirect URIs.</div>
-
-    <label id="pin-label">PIN d'accesso invitati (opzionale)</label>
-    <input id="pin-input" inputmode="numeric" maxlength="6" placeholder="es. 4242">
-    <div class="hint" id="pin-hint">Se impostato, gli invitati dovranno digitarlo per usare l'app. Comunicalo a voce.</div>
-
-    <button class="btn-primary" id="connect-btn" onclick="startLogin()">Connetti con Spotify</button>
-  </div>
-
-  <div id="lock-screen" hidden>
-    <h2 id="lock-title" style="margin-top:0;">Accesso invitati</h2>
-    <label id="lock-label">Inserisci il PIN</label>
-    <input id="lock-input" inputmode="numeric" maxlength="6" placeholder="••••">
-    <button class="btn-primary" id="unlock-btn" onclick="tryUnlock()">Sblocca</button>
-  </div>
-
-  <div id="main-screen" hidden>
-    <div id="now-playing">
-      <div id="disc"></div>
-      <div>
-        <div class="np-label" id="np-label">In riproduzione ora</div>
-        <div class="np-title" id="np-title">—</div>
-        <div class="np-artist" id="np-artist"></div>
-      </div>
-    </div>
-
-    <div id="search-row">
-      <input id="search-input" placeholder="Cerca una canzone o artista..." autocomplete="off">
-      <button id="search-btn" onclick="doSearch()">Cerca</button>
-    </div>
-
-    <div id="columns">
-      <div class="col">
-        <h3 id="results-heading">Risultati</h3>
-        <div class="list" id="results-list"></div>
-      </div>
-      <div class="col">
-        <h3 id="queue-title">Coda</h3>
-        <div class="list" id="queue-list"></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div id="toast"></div>
-
-<script>
-/* ===================== CONFIG ===================== */
-const SCOPES = "user-read-playback-state user-read-currently-playing user-modify-playback-state";
-const REDIRECT_URI = location.origin + location.pathname; // must be registered verbatim in Spotify dashboard
-
-/* ===================== I18N ===================== */
-const TRANSLATIONS = {
-  it: {
-    logout: "Disconnetti",
-    setupTitle: "Configurazione host",
-    setupDesc: "Da fare una sola volta, prima della festa. Serve un'app creata su <strong>developer.spotify.com/dashboard</strong> (gratuito).",
-    clientIdLabel: "Client ID Spotify",
-    clientIdPlaceholder: "es. 8f3a9c2b1e4d4f...",
-    redirectLabel: "Redirect URI da registrare nel dashboard Spotify",
-    redirectHint: "Tocca per copiare. Deve combaciare ESATTAMENTE (incluso https/http e slash finale) con quella inserita in Spotify Dashboard → Settings → Redirect URIs.",
-    connectBtn: "Connetti con Spotify",
-    pinLabel: "PIN d'accesso invitati (opzionale)",
-    pinHint: "Se impostato, gli invitati dovranno digitarlo per usare l'app. Comunicalo a voce.",
-    lockTitle: "Accesso invitati",
-    lockLabel: "Inserisci il PIN",
-    unlockBtn: "Sblocca",
-    toastWrongPin: "PIN errato",
-    nowPlayingLabel: "In riproduzione ora",
-    searchPlaceholder: "Cerca una canzone o artista...",
-    searchBtn: "Cerca",
-    resultsHeading: "Risultati",
-    queueHeading: "Coda ({n})",
-    toastCopied: "Redirect URI copiato",
-    toastNeedClientId: "Inserisci prima il Client ID",
-    toastAuthError: "Errore autenticazione Spotify",
-    toastStateMismatch: "State mismatch, riprova il login",
-    toastLoginFailed: "Login fallito",
-    toastAlreadyQueued: "Già in coda: {name}",
-    toastAdded: "Aggiunta: {name}",
-    toastGenericError: "Errore, riprova"
-  },
-  en: {
-    logout: "Disconnect",
-    setupTitle: "Host setup",
-    setupDesc: "One-time setup, before the party. Requires an app created on <strong>developer.spotify.com/dashboard</strong> (free).",
-    clientIdLabel: "Spotify Client ID",
-    clientIdPlaceholder: "e.g. 8f3a9c2b1e4d4f...",
-    redirectLabel: "Redirect URI to register in the Spotify dashboard",
-    redirectHint: "Tap to copy. Must match EXACTLY (including https/http and trailing slash) the one entered in Spotify Dashboard → Settings → Redirect URIs.",
-    connectBtn: "Connect with Spotify",
-    pinLabel: "Guest access PIN (optional)",
-    pinHint: "If set, guests will need to enter it to use the app. Tell them out loud.",
-    lockTitle: "Guest access",
-    lockLabel: "Enter the PIN",
-    unlockBtn: "Unlock",
-    toastWrongPin: "Wrong PIN",
-    nowPlayingLabel: "Now playing",
-    searchPlaceholder: "Search for a song or artist...",
-    searchBtn: "Search",
-    resultsHeading: "Results",
-    queueHeading: "Queue ({n})",
-    toastCopied: "Redirect URI copied",
-    toastNeedClientId: "Enter the Client ID first",
-    toastAuthError: "Spotify authentication error",
-    toastStateMismatch: "State mismatch, please log in again",
-    toastLoginFailed: "Login failed",
-    toastAlreadyQueued: "Already queued: {name}",
-    toastAdded: "Added: {name}",
-    toastGenericError: "Error, please try again"
-  },
-  de: {
-    logout: "Trennen",
-    setupTitle: "Host-Einrichtung",
-    setupDesc: "Einmalige Einrichtung vor der Party. Erfordert eine App, die auf <strong>developer.spotify.com/dashboard</strong> erstellt wurde (kostenlos).",
-    clientIdLabel: "Spotify Client-ID",
-    clientIdPlaceholder: "z. B. 8f3a9c2b1e4d4f...",
-    redirectLabel: "Redirect-URI zur Registrierung im Spotify-Dashboard",
-    redirectHint: "Zum Kopieren tippen. Muss EXAKT (inkl. https/http und Schrägstrich am Ende) mit der im Spotify Dashboard → Settings → Redirect URIs eingetragenen übereinstimmen.",
-    connectBtn: "Mit Spotify verbinden",
-    pinLabel: "Gäste-PIN (optional)",
-    pinHint: "Falls festgelegt, müssen Gäste ihn eingeben, um die App zu nutzen. Sag ihn ihnen mündlich.",
-    lockTitle: "Gästezugang",
-    lockLabel: "PIN eingeben",
-    unlockBtn: "Entsperren",
-    toastWrongPin: "Falscher PIN",
-    nowPlayingLabel: "Läuft gerade",
-    searchPlaceholder: "Song oder Interpret suchen...",
-    searchBtn: "Suchen",
-    resultsHeading: "Ergebnisse",
-    queueHeading: "Warteschlange ({n})",
-    toastCopied: "Redirect-URI kopiert",
-    toastNeedClientId: "Bitte zuerst die Client-ID eingeben",
-    toastAuthError: "Spotify-Authentifizierungsfehler",
-    toastStateMismatch: "State stimmt nicht überein, bitte erneut anmelden",
-    toastLoginFailed: "Anmeldung fehlgeschlagen",
-    toastAlreadyQueued: "Bereits in der Warteschlange: {name}",
-    toastAdded: "Hinzugefügt: {name}",
-    toastGenericError: "Fehler, bitte erneut versuchen"
-  }
-};
-
-function detectLang(){
-  const l = (navigator.language || 'it').slice(0,2).toLowerCase();
-  return ['it','en','de'].includes(l) ? l : 'it';
-}
-let currentLang = load('lang') || detectLang();
-
-function t(key, vars){
-  let str = (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang][key]) || TRANSLATIONS.it[key] || key;
-  if (vars) Object.keys(vars).forEach(k => { str = str.replace('{' + k + '}', vars[k]); });
-  return str;
-}
-
-let lastQueueCount = 0;
-
-function applyI18n(){
-  document.getElementById('logout-btn').textContent = t('logout');
-  document.getElementById('setup-title').textContent = t('setupTitle');
-  document.getElementById('setup-desc').innerHTML = t('setupDesc');
-  document.getElementById('client-id-label').textContent = t('clientIdLabel');
-  document.getElementById('client-id-input').placeholder = t('clientIdPlaceholder');
-  document.getElementById('redirect-label').textContent = t('redirectLabel');
-  document.getElementById('redirect-hint').textContent = t('redirectHint');
-  document.getElementById('connect-btn').textContent = t('connectBtn');
-  document.getElementById('pin-label').textContent = t('pinLabel');
-  document.getElementById('pin-hint').textContent = t('pinHint');
-  document.getElementById('lock-title').textContent = t('lockTitle');
-  document.getElementById('lock-label').textContent = t('lockLabel');
-  document.getElementById('unlock-btn').textContent = t('unlockBtn');
-  document.getElementById('np-label').textContent = t('nowPlayingLabel');
-  document.getElementById('search-input').placeholder = t('searchPlaceholder');
-  document.getElementById('search-btn').textContent = t('searchBtn');
-  document.getElementById('results-heading').textContent = t('resultsHeading');
-  document.getElementById('queue-title').textContent = t('queueHeading', {n: lastQueueCount});
-  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === currentLang));
-}
-
-function setLang(lang){
-  currentLang = lang;
-  store('lang', lang);
-  applyI18n();
-}
-
-/* ===================== UTIL ===================== */
-function b64url(bytes){
-  return btoa(String.fromCharCode(...new Uint8Array(bytes)))
-    .replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
-}
-async function sha256(str){
-  const data = new TextEncoder().encode(str);
-  return await crypto.subtle.digest('SHA-256', data);
-}
-function randomString(len=64){
-  const arr = new Uint8Array(len);
-  crypto.getRandomValues(arr);
-  return b64url(arr).slice(0, len);
-}
-function showToast(msg){
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(showToast._h);
-  showToast._h = setTimeout(()=> t.classList.remove('show'), 2600);
-}
-function store(key, val){ localStorage.setItem('pq_' + key, val); }
-function load(key){ return localStorage.getItem('pq_' + key); }
-function clearAuthStorage(){
-  ['access_token','refresh_token','expires_at','code_verifier','oauth_state']
-    .forEach(k => localStorage.removeItem('pq_' + k));
-}
-
-/* ===================== SETUP SCREEN ===================== */
-document.getElementById('redirect-box').textContent = REDIRECT_URI;
-const clientIdInput = document.getElementById('client-id-input');
-const savedClientId = load('client_id');
-if (savedClientId) clientIdInput.value = savedClientId;
-
-function copyRedirect(){
-  navigator.clipboard.writeText(REDIRECT_URI).then(()=> showToast(t('toastCopied')));
-}
-
-async function startLogin(){
-  const clientId = clientIdInput.value.trim();
-  if (!clientId){ showToast(t('toastNeedClientId')); return; }
-  store('client_id', clientId);
-
-  const pin = document.getElementById('pin-input').value.trim();
-  if (pin){
-    const hash = b64url(await sha256(pin));
-    store('guest_pin_hash', hash);
-  } else {
-    localStorage.removeItem('pq_guest_pin_hash');
-  }
-
-  const verifier = randomString(64);
-  const challenge = b64url(await sha256(verifier));
-  const state = randomString(16);
-  store('code_verifier', verifier);
-  store('oauth_state', state);
-
-  const url = new URL('https://accounts.spotify.com/authorize');
-  url.searchParams.set('client_id', clientId);
-  url.searchParams.set('response_type', 'code');
-  url.searchParams.set('redirect_uri', REDIRECT_URI);
-  url.searchParams.set('code_challenge_method', 'S256');
-  url.searchParams.set('code_challenge', challenge);
-  url.searchParams.set('state', state);
-  url.searchParams.set('scope', SCOPES);
-
-  location.href = url.toString();
-}
-
-function logout(){
-  clearAuthStorage();
-  sessionStorage.removeItem('pq_unlocked');
-  location.href = REDIRECT_URI;
-}
-
-let pollingStarted = false;
-function startPolling(){
-  if (pollingStarted) return;
-  pollingStarted = true;
-  refreshQueueView();
-  setInterval(refreshQueueView, 4000);
-}
-
-async function tryUnlock(){
-  const entered = document.getElementById('lock-input').value.trim();
-  const hash = b64url(await sha256(entered));
-  if (hash === load('guest_pin_hash')){
-    sessionStorage.setItem('pq_unlocked', '1');
-    showMainScreen();
-    startPolling();
-  } else {
-    showToast(t('toastWrongPin'));
-  }
-}
-
-function showMainScreen(){
-  document.getElementById('setup-screen').hidden = true;
-  document.getElementById('lock-screen').hidden = true;
-  document.getElementById('main-screen').hidden = false;
-  document.getElementById('logout-btn').hidden = false;
-}
-
-/* ===================== TOKEN EXCHANGE / REFRESH ===================== */
-async function exchangeCode(code){
-  const clientId = load('client_id');
-  const verifier = load('code_verifier');
-  const body = new URLSearchParams({
-    client_id: clientId,
-    grant_type: 'authorization_code',
-    code,
-    redirect_uri: REDIRECT_URI,
-    code_verifier: verifier
-  });
-  const resp = await fetch('https://accounts.spotify.com/api/token', {
-    method: 'POST',
-    headers: {'Content-Type':'application/x-www-form-urlencoded'},
-    body
-  });
-  if (!resp.ok){ showToast(t('toastAuthError')); return false; }
-  const data = await resp.json();
-  saveTokens(data);
-  return true;
-}
-
-async function refreshAccessToken(){
-  const clientId = load('client_id');
-  const refreshToken = load('refresh_token');
-  if (!refreshToken) return false;
-  const body = new URLSearchParams({
-    client_id: clientId,
-    grant_type: 'refresh_token',
-    refresh_token: refreshToken
-  });
-  const resp = await fetch('https://accounts.spotify.com/api/token', {
-    method: 'POST',
-    headers: {'Content-Type':'application/x-www-form-urlencoded'},
-    body
-  });
-  if (!resp.ok) return false;
-  const data = await resp.json();
-  saveTokens(data);
-  return true;
-}
-
-function saveTokens(data){
-  store('access_token', data.access_token);
-  if (data.refresh_token) store('refresh_token', data.refresh_token);
-  store('expires_at', Date.now() + data.expires_in * 1000);
-}
-
-async function ensureFreshToken(){
-  const expiresAt = parseInt(load('expires_at') || '0', 10);
-  if (Date.now() < expiresAt - 30000) return true;
-  return await refreshAccessToken();
-}
-
-/* ===================== SPOTIFY API ===================== */
-async function spotifyFetch(path, options={}){
-  await ensureFreshToken();
-  const token = load('access_token');
-  const resp = await fetch('https://api.spotify.com' + path, {
-    ...options,
-    headers: { ...(options.headers||{}), 'Authorization': 'Bearer ' + token }
-  });
-  return resp;
-}
-
-async function getQueueState(){
-  const resp = await spotifyFetch('/v1/me/player/queue');
-  if (resp.status === 204 || !resp.ok) return null;
-  return await resp.json();
-}
-
-async function searchTracks(q){
-  const resp = await spotifyFetch('/v1/search?type=track&limit=10&q=' + encodeURIComponent(q));
-  if (!resp.ok) return [];
-  const data = await resp.json();
-  return data.tracks?.items || [];
-}
-
-async function addTrackToQueue(uri){
-  const resp = await spotifyFetch('/v1/me/player/queue?uri=' + encodeURIComponent(uri), { method:'POST' });
-  return resp.ok;
-}
-
-/* ===================== UI RENDERING ===================== */
-function trackArtists(t){ return (t.artists||[]).map(a=>a.name).join(', '); }
-
-function renderResults(tracks){
-  const list = document.getElementById('results-list');
-  list.innerHTML = '';
-  tracks.forEach(t => {
-    const row = document.createElement('div');
-    row.className = 'track-row';
-    row.innerHTML = `
-      <div>
-        <div class="t-name">${escapeHtml(t.name)}</div>
-        <div class="t-artist">${escapeHtml(trackArtists(t))}</div>
-      </div>
-      <button class="add-btn">+</button>`;
-    row.querySelector('.add-btn').onclick = () => handleAdd(t);
-    list.appendChild(row);
-  });
-}
-
-function escapeHtml(s){
-  const d = document.createElement('div'); d.textContent = s; return d.innerHTML;
-}
-
-async function refreshQueueView(){
-  const state = await getQueueState();
-  const discEl = document.getElementById('disc');
-  if (!state){ return; }
-
-  if (state.currently_playing){
-    document.getElementById('np-title').textContent = state.currently_playing.name;
-    document.getElementById('np-artist').textContent = trackArtists(state.currently_playing);
-    discEl.classList.add('playing');
-  } else {
-    document.getElementById('np-title').textContent = '—';
-    document.getElementById('np-artist').textContent = '';
-    discEl.classList.remove('playing');
-  }
-
-  const queueList = document.getElementById('queue-list');
-  queueList.innerHTML = '';
-  lastQueueCount = (state.queue||[]).length;
-  document.getElementById('queue-title').textContent = t('queueHeading', {n: lastQueueCount});
-  (state.queue||[]).forEach(t => {
-    const row = document.createElement('div');
-    row.className = 'queue-row';
-    row.innerHTML = `<div class="t-name">${escapeHtml(t.name)}</div><div class="t-artist">${escapeHtml(trackArtists(t))}</div>`;
-    queueList.appendChild(row);
-  });
-
-  return state;
-}
-
-async function handleAdd(track){
-  const state = await refreshQueueView();
-  const already = state && (
-    (state.currently_playing && state.currently_playing.uri === track.uri) ||
-    (state.queue||[]).some(q => q.uri === track.uri)
-  );
-  if (already){
-    showToast(t('toastAlreadyQueued', {name: track.name}));
-    return;
-  }
-  const ok = await addTrackToQueue(track.uri);
-  showToast(ok ? t('toastAdded', {name: track.name}) : t('toastGenericError'));
-  refreshQueueView();
-}
-
-let searchDebounce;
-document.getElementById('search-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter') doSearch();
-});
-async function doSearch(){
-  const q = document.getElementById('search-input').value.trim();
-  if (!q) return;
-  const tracks = await searchTracks(q);
-  renderResults(tracks);
-}
-
-/* ===================== BOOTSTRAP ===================== */
-async function boot(){
-  applyI18n();
-
-  const params = new URLSearchParams(location.search);
-  const code = params.get('code');
-  const returnedState = params.get('state');
-
-  if (code){
-    const expectedState = load('oauth_state');
-    if (returnedState !== expectedState){
-      showToast(t('toastStateMismatch'));
-    } else {
-      const ok = await exchangeCode(code);
-      history.replaceState({}, '', REDIRECT_URI); // pulisce ?code=...&state=... dalla barra indirizzi
-      if (!ok){ showToast(t('toastLoginFailed')); }
-    }
-  }
-
-  if (load('refresh_token') || load('access_token')){
-    document.getElementById('setup-screen').hidden = true;
-
-    const pinHash = load('guest_pin_hash');
-    const unlocked = sessionStorage.getItem('pq_unlocked');
-
-    if (pinHash && !unlocked){
-      document.getElementById('lock-screen').hidden = false;
-    } else {
-      showMainScreen();
-      startPolling();
-    }
-  }
-}
-boot();
-</script>
-</body>
-</html>
+    <h1>
+        <svg id="spotify-logo" viewBox="0 0 168 168"><path d="M83.396.116C37.353.116.116 37.353.116 83.396c0 46.044 37.237 83.28 83.28 83.28 46.044 0 83.28-37.236 83.28-83.28C166.676 37.353 129.44.116 83.396.116zm38.484 120.027a6.257 6.257 0 0 1-8.584 2.03c-23.508-14.456-53.095-17.755-87.906-9.744a6.257 6.257 0 0 1-2.781-12.172c37.938-8.664 70.57-5.014 97.288 11.388a6.257
